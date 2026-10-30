@@ -10,6 +10,7 @@ Endpoints:
   GET  /api/leads        -> latest results (outputs/latest.json)
 """
 import json
+import os
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -19,7 +20,9 @@ import pipeline
 
 ROOT = Path(__file__).parent
 WEB = ROOT / "web"
-PORT = 8711
+# Render (and most hosts) inject $PORT; fall back to 8711 for local use.
+PORT = int(os.environ.get("PORT", "8711"))
+HOST = "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1"
 
 # single-run state (local single-user tool)
 JOB = {"running": False, "log": [], "done": False, "error": None, "stats": None}
@@ -99,10 +102,11 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    print(f"HomeTownTalks UI -> http://localhost:{PORT}")
+    where = "localhost" if HOST == "127.0.0.1" else HOST
+    print(f"HomeTownTalks UI -> http://{where}:{PORT}")
     print(f"  Apify key: {'set' if config.APIFY_TOKEN else 'MISSING'} | "
           f"OpenRouter key: {'set' if config.OPENROUTER_API_KEY else 'MISSING'}")
-    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+    ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()
 
 
 if __name__ == "__main__":

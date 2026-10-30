@@ -52,6 +52,25 @@ python3 app.py
 
 Pick sources (X / LinkedIn), lookback window, max items, model, and enrichment, then **Find leads**. Watch the live log, see stats, and browse the ranked **Combined / X / LinkedIn** tabs with clickable post + profile links. Filtered search is built in.
 
+## Deploy on Render (hosted, shareable)
+
+The app is a persistent server (runs scrapes in a background thread, so HTTP requests
+stay short) — it fits Render, Railway, Fly, or a VPS. It does **not** fit serverless
+hosts like Vercel, where 10–20 min runs would time out.
+
+1. Push this repo to GitHub (done).
+2. In Render: **New → Blueprint → select this repo.** It reads `render.yaml`.
+3. When prompted, paste your `APIFY_TOKEN` and `OPENROUTER_API_KEY` (stored as Render
+   secrets, never in the repo).
+4. Deploy. Open the `…onrender.com` URL.
+
+Notes:
+- The **free** plan sleeps after ~15 min idle (cold start ~1 min). While a run is active
+  the dashboard polls every ~1s, which keeps it awake — but if you close the tab mid-run,
+  a long job can be interrupted. Use the **starter** plan ($7/mo) for always-on.
+- Results (`outputs/`) live on the instance's ephemeral disk and reset on redeploy; add a
+  Render Disk if you need them to persist.
+
 ## Or run from the CLI
 
 ```bash

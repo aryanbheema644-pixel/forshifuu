@@ -1,0 +1,18 @@
+# Render blueprint — deploy from GitHub in one click.
+# In Render: New > Blueprint > pick this repo. It reads this file, then prompts
+# you for the two secret env vars below (they are NOT stored in the repo).
+services:
+  - type: web
+    name: hometowntalks
+    runtime: python
+    plan: free                      # upgrade to "starter" ($7/mo) to avoid sleep on idle
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    healthCheckPath: /
+    envVars:
+      - key: APIFY_TOKEN
+        sync: false                 # Render prompts you to paste this; never committed
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.11.9"
