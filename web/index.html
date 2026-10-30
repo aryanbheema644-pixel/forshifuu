@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HomeTownTalks — Shifu Lead Discovery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --orange:#FF5A1F; --orange-deep:#E8420A; --orange-soft:#FF8A4C; --amber:#F2A33C;
+    --ink:#2A1A12; --muted:#8a7367; --line:rgba(255,120,60,.18);
+    --glass:rgba(255,255,255,.58); --glass-strong:rgba(255,255,255,.78);
+    --radius:20px; --shadow:0 10px 40px -12px rgba(226,66,10,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:Inter,system-ui,-apple-system,sans-serif; color:var(--ink);
+    background:#FFF6F0; min-height:100vh; line-height:1.5;
+    background-image:
+      radial-gradient(60vw 60vw at 85% -10%, rgba(255,138,76,.42), transparent 60%),
+      radial-gradient(55vw 55vw at -10% 110%, rgba(255,90,31,.30), transparent 55%),
+      linear-gradient(180deg,#FFF9F5,#FFEFE4);
+    background-attachment:fixed;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:28px 16px 80px}
+  /* --- header --- */
+  header{
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+    background:var(--glass); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.65); border-radius:var(--radius);
+    padding:18px 22px; box-shadow:var(--shadow);
+  }
+  .logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--orange),var(--orange-deep));
+    color:#fff;font-family:Sora;font-weight:800;font-size:22px;box-shadow:0 6px 18px -4px rgba(232,66,10,.6)}
+  .brand h1{font-family:Sora;font-size:21px;margin:0;letter-spacing:-.4px}
+  .brand p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .chips{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:12px;font-weight:600;padding:6px 11px;border-radius:999px;
+    background:rgba(255,255,255,.6);border:1px solid var(--line);color:var(--muted)}
+  .chip.ok{color:#1f7a44;border-color:rgba(31,122,68,.25);background:rgba(220,252,231,.6)}
+  .chip.bad{color:#b4231b;border-color:rgba(180,35,27,.25);background:rgba(254,226,226,.6)}
+
+  .grid{display:grid;grid-template-columns:340px 1fr;gap:20px;margin-top:20px}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.6);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card h2{font-family:Sora;font-size:15px;margin:0;padding:18px 20px 0}
+  .card .body{padding:18px 20px}
+
+  label.fld{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:14px 0 6px}
+  input[type=number],select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(255,255,255,.75);font:inherit;color:var(--ink)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .toggles{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .toggle{flex:1;min-width:120px;display:flex;align-items:center;gap:9px;padding:11px 13px;border-radius:13px;
+    border:1px solid var(--line);background:rgba(255,255,255,.6);cursor:pointer;font-size:13.5px;font-weight:600;transition:.15s}
+  .toggle.on{border-color:var(--orange);background:linear-gradient(135deg,rgba(255,90,31,.14),rgba(255,138,76,.1));color:var(--orange-deep)}
+  .toggle input{accent-color:var(--orange);width:16px;height:16px}
+  .btn{width:100%;margin-top:18px;padding:13px;border:0;border-radius:14px;cursor:pointer;
+    font:inherit;font-weight:700;font-size:15px;color:#fff;
+    background:linear-gradient(135deg,var(--orange),var(--orange-deep));
+    box-shadow:0 10px 24px -8px rgba(232,66,10,.65);transition:.15s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:10px}
+
+  /* --- status / log --- */
+  .status{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px}
+  .dot{width:9px;height:9px;border-radius:50%;background:#c9b8ad}
+  .dot.live{background:var(--orange);box-shadow:0 0 0 0 rgba(255,90,31,.6);animation:pulse 1.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,90,31,.55)}70%{box-shadow:0 0 0 10px rgba(255,90,31,0)}100%{box-shadow:0 0 0 0 rgba(255,90,31,0)}}
+  .log{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.7;color:#6a554a;
+    background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:12px;padding:12px 14px;
+    max-height:190px;overflow:auto;white-space:pre-wrap}
+
+  /* --- stats --- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  @media(max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{padding:14px 16px;border-radius:16px;background:var(--glass-strong);border:1px solid rgba(255,255,255,.6)}
+  .stat .n{font-family:Sora;font-size:26px;font-weight:800;color:var(--orange-deep);line-height:1}
+  .stat .l{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:5px;text-transform:uppercase;letter-spacing:.4px}
+
+  /* --- tabs + search --- */
+  .bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+  .tabs{display:flex;gap:6px;background:rgba(255,255,255,.5);padding:5px;border-radius:13px;border:1px solid var(--line)}
+  .tab{padding:8px 15px;border-radius:9px;border:0;background:transparent;cursor:pointer;font:inherit;font-weight:600;font-size:13.5px;color:var(--muted)}
+  .tab.active{background:#fff;color:var(--orange-deep);box-shadow:0 3px 10px -4px rgba(232,66,10,.4)}
+  .tab .c{display:inline-block;margin-left:6px;font-size:11px;background:rgba(255,90,31,.15);color:var(--orange-deep);padding:1px 7px;border-radius:999px;font-weight:700}
+  .search{margin-left:auto;flex:1;min-width:160px;max-width:320px}
+  .search input{width:100%;padding:9px 13px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.75);font:inherit}
+  .tabnote{font-size:12.5px;color:#9a6412;background:rgba(242,163,60,.12);border:1px solid rgba(242,163,60,.28);
+    border-radius:11px;padding:9px 13px;margin-bottom:12px;display:none}
+  .tabnote.show{display:block}
+
+  /* --- table --- */
+  .tablewrap{overflow-x:auto;border-radius:16px}
+  table{width:100%;border-collapse:separate;border-spacing:0 8px;min-width:720px}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);text-align:left;padding:4px 12px;font-weight:700}
+  td{padding:13px 12px;background:var(--glass-strong);border-top:1px solid rgba(255,255,255,.6);border-bottom:1px solid rgba(255,255,255,.6);vertical-align:top;font-size:13.5px}
+  tr td:first-child{border-left:1px solid rgba(255,255,255,.6);border-radius:14px 0 0 14px}
+  tr td:last-child{border-right:1px solid rgba(255,255,255,.6);border-radius:0 14px 14px 0}
+  .score{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-family:Sora;font-weight:800;color:#fff;font-size:15px;
+    background:linear-gradient(135deg,var(--orange),var(--orange-deep))}
+  .nm{font-weight:700}
+  .sub{color:var(--muted);font-size:12px;margin-top:2px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+  .t-high{background:rgba(255,90,31,.16);color:var(--orange-deep)}
+  .t-medium{background:rgba(242,163,60,.2);color:#9a6412}
+  .t-low{background:rgba(140,120,110,.16);color:#75655c}
+  .src{font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px}
+  .src-x{background:#111;color:#fff}
+  .src-linkedin{background:#0a66c2;color:#fff}
+  .lk{display:inline-flex;gap:7px;flex-wrap:wrap}
+  .lk a{font-size:12px;font-weight:600;text-decoration:none;color:var(--orange-deep);border:1px solid var(--line);padding:4px 9px;border-radius:9px;background:rgba(255,255,255,.6)}
+  .lk a:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+  .post{color:#5c483e;font-size:12.5px;max-width:360px}
+  .empty{text-align:center;padding:50px 20px;color:var(--muted)}
+  .empty .big{font-family:Sora;font-size:17px;color:var(--ink);margin-bottom:6px}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">S</div>
+    <div class="brand">
+      <h1>HomeTownTalks</h1>
+      <p>Shifu Foundation · hometown-visit lead discovery across X &amp; LinkedIn</p>
+    </div>
+    <div class="chips" id="keychips"></div>
+  </header>
+
+  <div class="grid">
+    <!-- controls -->
+    <aside class="card">
+      <h2>Run a search</h2>
+      <div class="body">
+        <div class="toggles">
+          <label class="toggle on" id="tg-x"><input type="checkbox" checked data-src="x"> X / Twitter</label>
+          <label class="toggle on" id="tg-li"><input type="checkbox" checked data-src="linkedin"> LinkedIn</label>
+        </div>
+
+        <div class="row2">
+          <div><label class="fld">Lookback (days)</label><input type="number" id="lookback" value="90" min="1" max="365"></div>
+          <div><label class="fld">Max items / source</label><input type="number" id="maxitems" value="500" min="10" max="2000" step="10"></div>
+        </div>
+
+        <label class="fld">Model (OpenRouter)</label>
+        <select id="model">
+          <option value="google/gemini-2.5-flash">gemini-2.5-flash (balanced)</option>
+          <option value="google/gemini-2.5-flash-lite">gemini-2.5-flash-lite (cheapest)</option>
+          <option value="openai/gpt-4o-mini">gpt-4o-mini</option>
+          <option value="openai/gpt-4.1-mini">gpt-4.1-mini</option>
+        </select>
+
+        <div class="toggles" style="margin-top:14px">
+          <label class="toggle on" id="tg-en"><input type="checkbox" checked id="enrich"> LinkedIn enrich (X leads)</label>
+        </div>
+        <div class="toggles">
+          <label class="toggle on" id="tg-cb"><input type="checkbox" id="cityboost" checked> Tier-2/3 city sweep</label>
+        </div>
+
+        <label class="fld">Queries limit <span style="font-weight:400">(blank = all; set small for cheap tests)</span></label>
+        <input type="number" id="qlimit" placeholder="all" min="1" max="50">
+
+        <button class="btn" id="runbtn">Find leads →</button>
+        <p class="hint">Real runs call Apify + OpenRouter and cost a few cents. The signal is rare — expect a handful of strong leads, so run often.</p>
+      </div>
+    </aside>
+
+    <!-- results -->
+    <main>
+      <div class="card" id="statuscard" style="margin-bottom:20px;display:none">
+        <div class="body">
+          <div class="status"><span class="dot" id="dot"></span><span id="statustxt">Idle</span></div>
+          <div class="log" id="log"></div>
+        </div>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="card">
+        <div class="body">
+          <div class="bar">
+            <div class="tabs">
+              <button class="tab active" data-tab="combined">Combined <span class="c" id="c-combined">0</span></button>
+              <button class="tab" data-tab="x">X <span class="c" id="c-x">0</span></button>
+              <button class="tab" data-tab="linkedin">LinkedIn <span class="c" id="c-linkedin">0</span></button>
+              <button class="tab" data-tab="review">Review <span class="c" id="c-review">0</span></button>
+            </div>
+            <div class="search"><input id="filter" placeholder="Filter by name, hometown, company…"></div>
+          </div>
+          <div id="tabnote" class="tabnote"></div>
+          <div class="tablewrap" id="tablewrap"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer>HomeTownTalks · built for Shifu Foundation · one entrepreneur from every district</footer>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let DATA = {x:[], linkedin:[], combined:[], stats:{}};
+let TAB = "combined", POLL = null;
+
+// toggle visual state
+document.querySelectorAll(".toggle input").forEach(i=>{
+  const upd=()=>i.closest(".toggle").classList.toggle("on", i.checked);
+  i.addEventListener("change", upd);
+});
+
+async function loadConfig(){
+  try{
+    const c = await (await fetch("/api/config")).json();
+    const chips = $("#keychips");
+    chips.innerHTML =
+      `<span class="chip ${c.has_apify?'ok':'bad'}">Apify ${c.has_apify?'✓':'missing'}</span>`+
+      `<span class="chip ${c.has_openrouter?'ok':'bad'}">OpenRouter ${c.has_openrouter?'✓':'missing'}</span>`;
+  }catch(e){}
+}
+
+function tier(t){ return `<span class="tag t-${t}">${t}</span>`; }
+function esc(s){ return (s||"").replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+function rows(list){
+  if(!list.length) return `<div class="empty"><div class="big">No leads yet</div>Run a search, or widen the lookback window. This signal is genuinely rare.</div>`;
+  const body = list.map(l=>{
+    const links = [];
+    if(l.post_url) links.push(`<a href="${esc(l.post_url)}" target="_blank" rel="noopener">post ↗</a>`);
+    if(l.twitter_url) links.push(`<a href="${esc(l.twitter_url)}" target="_blank" rel="noopener">X ↗</a>`);
+    if(l.linkedin_url) links.push(`<a href="${esc(l.linkedin_url)}" target="_blank" rel="noopener">LinkedIn ↗</a>`);
+    return `<tr>
+      <td><div class="score">${l.final_score}</div></td>
+      <td><div class="nm">${esc(l.name||l.author_handle||"—")}</div>
+          <div class="sub">${esc(l.company||"")}</div></td>
+      <td>${tier(l.persona_tier)}<div class="sub">${esc(l.persona)}</div></td>
+      <td><b>${l.intent_score}</b><div class="sub">${esc(l.openness)}</div></td>
+      <td>${esc(l.hometown||"—")}${l.hometown_tier && l.hometown_tier!=='unknown' ? `<div class="sub">${l.hometown_tier==='tier2_3'?'Tier 2/3 ✓':esc(l.hometown_tier)}</div>`:''}</td>
+      <td><span class="src src-${l.source}">${l.source==='x'?'X':'in'}</span></td>
+      <td class="post">${esc((l.text||"").slice(0,160))}${(l.text||"").length>160?"…":""}</td>
+      <td><div class="lk">${links.join("")}</div></td>
+    </tr>`;
+  }).join("");
+  return `<table><thead><tr>
+      <th>Score</th><th>Person</th><th>Fit</th><th>Intent</th><th>Hometown</th><th>Src</th><th>Post</th><th>Links</th>
+    </tr></thead><tbody>${body}</tbody></table>`;
+}
+
+function render(){
+  const f = $("#filter").value.toLowerCase().trim();
+  let list = DATA[TAB] || [];
+  if(f) list = list.filter(l => (l.name+" "+l.hometown+" "+l.company+" "+l.author_handle+" "+l.text).toLowerCase().includes(f));
+  $("#tablewrap").innerHTML = rows(list);
+  ["combined","x","linkedin","review"].forEach(k=> $("#c-"+k).textContent = (DATA[k]||[]).length);
+  const note = $("#tabnote");
+  if(TAB==="review"){
+    note.className="tabnote show";
+    note.textContent="Broader list — every Indian Tier-2/3 hometown visitor found, including soft or no explicit invite and any persona. Eyeball these manually; the other tabs are the strict auto-qualified leads.";
+  } else { note.className="tabnote"; note.textContent=""; }
+}
+
+function renderStats(){
+  const s = DATA.stats||{};
+  const tiles = [
+    ["Scanned", s.raw ?? 0],["Strict leads", s.qualified ?? (DATA.combined||[]).length],
+    ["Review list", s.review ?? (DATA.review||[]).length],
+    ["X / LinkedIn", `${(DATA.x||[]).length} / ${(DATA.linkedin||[]).length}`],
+  ];
+  $("#stats").innerHTML = tiles.map(([l,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">${l}</div></div>`).join("");
+}
+
+async function loadLeads(){
+  try{
+    DATA = await (await fetch("/api/leads")).json();
+    renderStats(); render();
+  }catch(e){}
+}
+
+document.querySelectorAll(".tab").forEach(t=> t.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active"); TAB=t.dataset.tab; render();
+});
+$("#filter").addEventListener("input", render);
+
+$("#runbtn").onclick = async ()=>{
+  const sources = [...document.querySelectorAll(".toggle input[data-src]")].filter(i=>i.checked).map(i=>i.dataset.src);
+  if(!sources.length){ alert("Pick at least one source."); return; }
+  const params = {
+    sources,
+    lookback_days: +$("#lookback").value,
+    max_items: +$("#maxitems").value,
+    model: $("#model").value,
+    enable_enrichment: $("#enrich").checked,
+    city_booster: $("#cityboost").checked,
+    queries_limit: $("#qlimit").value ? +$("#qlimit").value : null,
+  };
+  const r = await fetch("/api/run",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(params)});
+  if(r.status===409){ alert("A run is already in progress."); return; }
+  $("#statuscard").style.display="block";
+  $("#runbtn").disabled=true; $("#runbtn").textContent="Searching…";
+  $("#dot").classList.add("live");
+  if(POLL) clearInterval(POLL);
+  POLL = setInterval(poll, 1200); poll();
+};
+
+async function poll(){
+  let j;
+  try{ j = await (await fetch("/api/status")).json(); }catch(e){ return; }
+  $("#log").textContent = (j.log||[]).join("\n");
+  $("#log").scrollTop = $("#log").scrollHeight;
+  $("#statustxt").textContent = j.running ? "Running…" : (j.error ? "Error" : (j.done?"Done":"Idle"));
+  if(!j.running && j.done){
+    clearInterval(POLL); POLL=null;
+    $("#dot").classList.remove("live");
+    $("#runbtn").disabled=false; $("#runbtn").textContent="Find leads →";
+    loadLeads();
+  }
+}
+
+loadConfig(); loadLeads();
+
+// Auto-refresh: pick up background/CLI runs without a manual reload.
+setInterval(async ()=>{
+  try{
+    const d = await (await fetch("/api/leads")).json();
+    const a = d.stats && d.stats.generated_at, b = DATA.stats && DATA.stats.generated_at;
+    if(a && a !== b){ DATA = d; renderStats(); render(); }
+  }catch(e){}
+}, 5000);
+</script>
+</body>
+</html>
